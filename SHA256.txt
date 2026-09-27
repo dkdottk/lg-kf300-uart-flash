@@ -1,0 +1,13 @@
+# Hashes of the flash pack binaries (binaries are NOT in this repo — get from Internet Archive)
+
+KF300_Flash_Windows.zip
+  248f49d1d830217bfad18d8bac7aeef956befec0c864078ea6f4306a09cb2a34
+
+KF300_080313.dll
+  a390cf365cf8b95f11727a7ce912b412a496cf669634fdee601d197fd2575ef2
+
+SETUP_GSMULTI_V30.exe
+  c69b70a3406efd79bf20818c5a4491d18f217f29d3a75d6a10a5fd111606c397
+
+KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin
+  d16da46b3c3e156f830fc7af56fc56d736e76e7d74be8fe95aa6fcc7457415c6

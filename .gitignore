@@ -1,0 +1,8 @@
+*.exe
+*.dll
+*.bin
+*.rar
+*.zip
+*.mbn
+node_modules/
+.DS_Store
