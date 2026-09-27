@@ -134,7 +134,9 @@ Mac: `probe.py -b 921600` → `boot: 1B` при правильной ориен�
 
 Строго: **UART без 5V → Waiting → АКБ → импульс 5V на R101.**
 
-Источники: unlockers.ru archive t-19971; http://shouji.pc004.com/xuangou/2009/09/08/2185552.shtml
+Источники: unlockers.ru archive t-19971; http://shouji.pc004.com/xuangou/2009/09/08/2185552.shtml  
+
+GitHub (docs only): https://github.com/dkdottk/lg-kf300-uart-flash
 
 ---
 
