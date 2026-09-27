@@ -1,33 +1,33 @@
-# LG KF300 — прошивка UART + GSM-Multi
+# LG KF300 — UART flash with GSM-Multi
 
-**Статус: УСПЕХ (Pass), 2026-09-27.** Телефон сам включился после Pass.  
-Не предлагать «вынуть USB чтобы включить». **5V на R101 — только импульс**, не держать постоянно с начала.
+**Status: SUCCESS (Pass), 2026-09-27.** The phone powered on by itself after Pass.  
+Do **not** suggest “unplug USB to turn the phone on.” **5V on R101 is a pulse only** — do not leave it connected from the start.
 
-Локальный бриф для агента: `AGENT_BRIEF.md`  
-Windows-копия гайда у владельца: `c:\Users\dkdot\Downloads\Telegram Desktop\KF300_FLASH_GUIDE.md`
-
----
-
-## 1. Зачем шили
-
-- Меню жило, папки / галерея / игры → лаг → ребут (битая FS/NAND).
-- USB BootROM нестабилен.
-- Путь: **UART + GSM-Multi V3.0**, ADI **Hermes (AD6527)**.
-- CN300 выдран → пайка на R310/R311/R101. Type‑C на прошивку **снят** (VBUS → USB_DET мешает UART).
+Internet Archive pack: https://archive.org/details/kf-300-flash-windows  
+GitHub (docs only): https://github.com/dkdottk/lg-kf300-uart-flash
 
 ---
 
-## 2. Файлы
+## 1. Why we flashed
 
-| Где | Путь |
-|-----|------|
-| Mac комплект | `/Users/danylo/dev/DIY/KF300-flash/` + `~/Downloads/KF300_Flash_Windows.zip` |
-| Windows комплект | `C:\Users\dkdot\Documents\KF300_Flash_Windows\` |
-| Multi | `C:\GSMULTI\` (`config.ini` под KF300) |
+- Menus worked, but folders / gallery / games → lag → reboot (corrupt FS/NAND).
+- USB BootROM was unreliable.
+- Path: **UART + GSM-Multi V3.0**, ADI **Hermes (AD6527)**.
+- CN300 connector ripped → solder to R310 / R311 / R101. Type‑C **removed** for flash (VBUS → USB_DET breaks the UART path).
+
+---
+
+## 2. Files
+
+| Where | Path |
+|-------|------|
+| Internet Archive | https://archive.org/details/kf-300-flash-windows |
+| Windows pack (example) | `Documents\KF300_Flash_Windows\` |
+| GSM-Multi install | `C:\GSMULTI\` |
 | DLL | `...\2_DLL\KF300_080313.dll` |
-| FW | `...\3_Firmware\KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin` |
+| Firmware | `...\3_Firmware\KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin` |
 
-CH340 в успешном сеансе: **COM5**.
+CH340 COM port in the successful session: **COM5** (yours may differ).
 
 SHA256:
 
@@ -40,124 +40,120 @@ KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin
   d16da46b3c3e156f830fc7af56fc56d736e76e7d74be8fe95aa6fcc7457415c6
 ```
 
+Also see [SHA256.txt](./SHA256.txt). Scan the `.exe` on VirusTotal before running.
+
 ---
 
-## 3. Multi Configuration
+## 3. GSM-Multi configuration
 
-| Поле | Значение |
-|------|----------|
+| Field | Value |
+|-------|-------|
 | DLL | `KF300_080313.dll` |
 | S/W | `KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin` |
 | Port | **UART** |
 | Baud | **921600** |
-| Start Com = End Com | **один** COM CH340 (не 1–16: промах по окну Hermes) |
-| ADI boot | **Hermes (AD6527)…** явно в UI |
+| Start Com = End Com | **one** CH340 COM (not 1–16 — you will miss the Hermes window) |
+| ADI boot | **Hermes (AD6527)…** — select explicitly in the UI |
 
-Джампер CH340 = **3.3V**. Пин 3.3V/VCC на телефон **не** подключать. Питание телефона = только АКБ.
+CH340 logic jumper = **3.3V**. Do **not** wire the module 3.3V/VCC pin to the phone. Phone power = battery only.
 
-В `C:\GSMULTI\config.ini`: Start/End Com = один порт. Если Multi уже открыт — держит старый конфиг в RAM → **закрыть полностью**.
-
----
-
-## 4. Распиновка (CN300, схема SVC ENG_080222)
-
-| CH340 | Телефон |
-|-------|---------|
-| GND | GND / экран |
-| RXD | **R310** = TX телефона (pin 16), сторона к CPU |
-| TXD | **R311** = RX телефона (pin 17), сторона к CPU |
-| 5V | через **47 кΩ** (не 47Ω) → **R101 / EXT_PWRON** (pin 11) |
-| 3.3V | не соединять |
-
-Не путать с пинами бокса VE-Pro/Xintel.  
-Mac: `probe.py -b 921600` → `boot: 1B` при правильной ориентации; после swap → 0.
+In `C:\GSMULTI\config.ini`, set Start/End Com to a single port. If Multi is already open it keeps the old config in RAM — **fully quit** and reopen.
 
 ---
 
-## 5. РАБОЧИЙ ПОРЯДОК (так и прошили)
+## 4. Pinout (CN300, service schematic SVC ENG_080222)
 
-**5V на R101 = импульс PWRON (фронт 0→5V), не постоянное питание с шага 1.**
+| CH340 | Phone |
+|-------|-------|
+| GND | GND / shield |
+| RXD | **R310** = phone TX (was pin 16), CPU side of the resistor |
+| TXD | **R311** = phone RX (was pin 17), CPU side of the resistor |
+| 5V | via **47 kΩ** (not 47 Ω) → **R101 / EXT_PWRON** (was pin 11) |
+| 3.3V | do not connect |
 
-1. USB CH340 в ПК (**не вынимать** до Pass). Type‑C снят.  
-2. Подключить **всё кроме 5V**: GND + RXD→R310 + TXD→R311. Провод **5V–47K с R101 снят**.  
+Do not confuse with VE-Pro / Xintel **box** pin numbers.  
+Mac check: `probe.py -b 921600` → `boot: 1B` with correct orientation; after TX/RX swap → 0.
+
+---
+
+## 5. Working procedure (verified)
+
+**5V on R101 = PWRON pulse (0→5V edge), not constant power from step 1.**
+
+1. Plug USB CH340 into the PC (**do not unplug** until Pass). Type‑C removed.  
+2. Connect **everything except 5V**: GND + RXD→R310 + TXD→R311. Keep the **5V–47k wire off R101**.  
 3. Multi → **Start** → **Waiting / Wait Phone Connecting…**.  
-4. **Вставить АКБ** (ещё без 5V).  
-5. **Импульс 5V**: посадить 5V–47K на R101.  
-6. Пошли **ramloader / %** → **ничего не трогать** до **Pass / OK / Success**.  
-7. Stop → снять провода → USB.
+4. **Insert the battery** (still no 5V).  
+5. **Pulse 5V**: touch/solder 5V–47k onto R101.  
+6. When **ramloader / %** starts → **do not touch anything** until **Pass / OK / Success**.  
+7. Stop → disconnect wires → USB.
 
-После Pass телефон сам включается. Первый запуск может быть долгим (логотип, перезагрузки, сборка FS) — **не рвать АКБ**. Для обычной работы UART снять. Проверить папки / галерею / игры.
+After Pass the phone powers on by itself. First boot may be slow (logo, reboots, FS rebuild) — **do not pull the battery**. Remove UART for normal use. Check folders / gallery / games.
 
-Смотреть **COM/лог Multi**, не логотип LG: окно Hermes ~1 байт в первую долю секунды; логотип = окно уже прошло.
-
----
-
-## 6. Почему другие схемы ломались
-
-| Ошибка | Почему |
-|--------|--------|
-| 5V уже сидит, потом АКБ | нет фронта PWRON 0→5V |
-| Вынуть/вставить USB | телефон включается (фронт 5V), но Windows роняет COM — Multi не слышит boot |
-| Длинный Power при постоянно включённом 5V / после обрыва NAND | часто бесполезен → АКБ 10 с наружу |
-| Флип TX/RX «чтобы экран ожил» | 3.3V idle уходит на TX телефона; Mac даёт boot 0; **неправильная** ориентация |
-| Снять TX/RX «чтобы включился» | экран оживёт, Multi навсегда Waiting |
-| Оборвать TX/RX или АКБ на % | ramloader write error → АКБ 10 с снаружи, снова рабочий порядок |
-| Start Com=1 … End=16 | промах по короткому окну Hermes |
-
-Постоянный CH340 TXD (idle 3.3V) на R311 может подпирать RX; правильная ориентация всё равно RXD→R310, TXD→R311 — ловить окно импульсом 5V, не флипом.
+Watch the **Multi COM log**, not the LG logo: the Hermes window is ~1 byte in the first fraction of a second; the logo means that window already passed.
 
 ---
 
-## 7. Измерения (не гонять по кругу)
+## 6. Why other sequences failed
 
-- 5V пин модуля ≈ 4.9V к GND = нормальный USB VBUS CH340; на плату сам по себе не сажать.  
-- TX/RX idle DC ≈ 3.3V. «8V на RX» — чаще ошибка режима метра / опоры.  
-- Омметр 5V–GND / RX–GND на живой плате бессмысленен.  
-- Для прошивки омметр не нужен.
+| Mistake | Why |
+|---------|-----|
+| 5V already on R101, then insert battery | no 0→5V PWRON edge |
+| Unplug/replug USB | phone turns on (5V edge) but Windows drops COM — Multi never hears boot |
+| Long Power with 5V permanently on / after a failed NAND write | often useless → battery out for ~10 s |
+| Flip TX/RX “so the screen wakes” | idle 3.3V lands on phone TX; Mac shows boot 0; **wrong** orientation |
+| Disconnect TX/RX “so it turns on” | screen may wake; Multi stays Waiting forever |
+| Pull TX/RX or battery during % | ramloader write error → battery out ~10 s, then the working order again |
+| Start Com=1 … End=16 | miss the short Hermes window |
 
-Светодиоды CH340: ориентир **пины TXD/RXD**, не цвет. В старт должен мигнуть **RX** (телефон шлёт boot), потом **TX** если Multi ответил. Только TX без RX = провода перепутаны. Постоянный свет от «просто воткнул» ничего не значит.
-
----
-
-## 8. Что не делать
-
-- Не шить повторно, если уже Pass и меню живое.  
-- Не подключать 3.3V CH340 на телефон.  
-- Не сажать 5V без 47k (и не 47Ω).  
-- Не оставлять TX/RX перепутанными.  
-- Не закрывать Multi и не дёргать USB/провода на процентах.  
-- Не предлагать «вынуть USB чтобы включить» как метод прошивки.
+Idle CH340 TXD (3.3V) on R311 can bias RX; still use RXD→R310, TXD→R311 — catch the window with the 5V pulse, not by flipping wires.
 
 ---
 
-## 9. Если снова понадобится шить
+## 7. Measurements (don’t chase ghosts)
 
-Строго: **UART без 5V → Waiting → АКБ → импульс 5V на R101.**
+- Module 5V pin ≈ 4.9V to module GND = normal USB VBUS for the CH340; do not feed that pin straight into the board without 47k to R101.  
+- TX/RX idle DC ≈ 3.3V. “8V on RX” is usually a meter mode / reference mistake.  
+- Ohmmeter on 5V–GND / RX–GND on a live board is meaningless.  
+- You do not need an ohmmeter to flash.
 
-Источники: unlockers.ru archive t-19971; http://shouji.pc004.com/xuangou/2009/09/08/2185552.shtml  
-
-GitHub (docs only): https://github.com/dkdottk/lg-kf300-uart-flash
-Internet Archive (pack): https://archive.org/details/kf-300-flash-windows
+CH340 LEDs: trust **TXD/RXD pin labels**, not LED color. At start, **RX** should blink (phone sends boot), then **TX** if Multi answers. TX only, no RX ⇒ wires swapped. A steady glow just from plugging wires means nothing.
 
 ---
 
-## 10. Mac (только проверка линии)
+## 8. Do not
+
+- Reflash if you already have Pass and menus work.  
+- Wire CH340 3.3V to the phone.  
+- Connect 5V without 47k (and never 47 Ω).  
+- Leave TX/RX swapped.  
+- Close Multi or yank USB/wires while percentages run.  
+- Treat “unplug USB to power on” as a flash method.
+
+---
+
+## 9. If you need to flash again
+
+Strictly: **UART without 5V → Waiting → battery → 5V pulse on R101.**
+
+Sources: [unlockers.ru archive t-19971](https://www.unlockers.ru/archive/index.php/t-19971.html); [Chinese UART + MultiGSM text guide](http://shouji.pc004.com/xuangou/2009/09/08/2185552.shtml)
+
+---
+
+## 10. macOS (link check only)
 
 ```bash
-cd /Users/danylo/dev/DIY/KF300-flash/uart-sniff
 python3 probe.py -b 921600
 ```
 
-Полная прошивка с macOS невозможна — нужен Windows / VM + Multi.
+Full flash is not possible from macOS alone — use Windows or a VM with Multi + USB passthrough of the CH340.
 
 ---
 
 ## Changelog
 
-### 2026-09-27 22:45
-- Added: статус Pass; рабочий порядок с импульсом 5V после АКБ.
-- Changed: старый порядок (5V постоянно / Power вместо импульса) помечен как тупик.
-- Added: антипаттерны, измерения, пути Windows COM5, ссылка на AGENT_BRIEF.md.
-
 ### 2026-09-27
-- Added: первичный гайд (железо, Multi, unlockers, Mac probe).
+- Added: Pass status; working order with 5V pulse after battery.
+- Changed: constant-5V / Power-only sequences documented as dead ends.
+- Changed: guide translated to English; agent brief removed from the repo.
+- Added: Internet Archive + GitHub links.

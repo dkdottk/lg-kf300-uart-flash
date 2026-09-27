@@ -3,7 +3,7 @@
 Historical notes for recovering an **LG KF300** (ADI SoftFone, Hermes / AD6527) when USB BootROM is dead and the phone soft-bricks on gallery/folders (FS/NAND corruption).
 
 **This repository contains documentation only — no installers, DLLs, or firmware binaries.**  
-Download the verified pack from the Internet Archive (links below), check SHA256, VirusTotal the `.exe`.
+Download the verified pack from the Internet Archive (links below), check SHA256, and scan the `.exe` on VirusTotal.
 
 Verified working flash: **2026-09-27** (GSM-Multi V3.0, UART CH340, Pass).
 
@@ -15,7 +15,7 @@ Verified working flash: **2026-09-27** (GSM-Multi V3.0, UART CH340, Pass).
 
 | Resource | URL |
 |----------|-----|
-| **Flash pack (ZIP + guide)** | https://archive.org/details/kf-300-flash-windows |
+| **Flash pack (ZIP)** | https://archive.org/details/kf-300-flash-windows |
 | Related IA item (Multi / DLL fragments) | https://archive.org/details/lg-dll-files |
 | Multi installer on IA (inside RAR) | https://archive.org/download/lg-dll-files/%24RCT1LM6.rar |
 | KF300 DLL on IA | https://archive.org/download/lg-dll-files/KF300_080313.dll |
@@ -23,12 +23,11 @@ Verified working flash: **2026-09-27** (GSM-Multi V3.0, UART CH340, Pass).
 Pack expected contents: `SETUP_GSMULTI_V30.exe` + `KF300_080313.dll` + `KF300AT-00-V10l-CIS-XXX-APR-17-2008.bin`  
 Hashes: see [SHA256.txt](./SHA256.txt)
 
-### Guides in this repo
+### Guide in this repo
 
 | Doc | What |
 |-----|------|
 | [KF300_FLASH_GUIDE.md](./KF300_FLASH_GUIDE.md) | Full procedure (working order, pinout, anti-patterns) |
-| [AGENT_BRIEF.md](./AGENT_BRIEF.md) | Short brief for the next person / AI agent |
 
 ### Community / historical threads
 
@@ -53,7 +52,7 @@ Hashes: see [SHA256.txt](./SHA256.txt)
 - Port: **UART**, baud **921600**, ADI boot **Hermes (AD6527)**  
 - Start Com = End Com = **one** CH340 COM (do not scan 1–16)  
 - Board (CN300 ripped): CH340 **RXD→R310** (phone TX), **TXD→R311** (phone RX), GND  
-- **5V → 47 kΩ → R101 (EXT_PWRON)** is a **pulse after** Multi is Waiting and battery is in — not permanently from the start  
+- **5V → 47 kΩ → R101 (EXT_PWRON)** is a **pulse after** Multi is Waiting and the battery is inserted — not permanently from the start  
 - CH340 logic jumper **3.3V**; do **not** wire module 3.3V/VCC to the phone  
 - Remove Type-C / VBUS during flash (USB_DET breaks the UART path)  
 - Never pull battery/USB while percentages are running  
@@ -71,5 +70,6 @@ This repo ships **text documentation only**, for archival and repair of a long-o
 
 ## Changelog
 
-- 2026-09-27 — docs published after successful Pass flash.
+- 2026-09-27 — docs published after successful Pass flash (English).
 - 2026-09-27 — IA pack: https://archive.org/details/kf-300-flash-windows
+- 2026-09-27 — removed agent brief; guide fully in English.
