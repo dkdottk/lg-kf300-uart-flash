@@ -15,7 +15,7 @@ Verified working flash: **2026-09-27** (GSM-Multi V3.0, UART CH340, Pass).
 
 | Resource | URL |
 |----------|-----|
-| **Your IA item** (full pack — add after upload) | _paste `https://archive.org/details/YOUR-IDENTIFIER` here_ |
+| **Flash pack (ZIP + guide)** | https://archive.org/details/kf-300-flash-windows |
 | Related IA item (Multi / DLL fragments) | https://archive.org/details/lg-dll-files |
 | Multi installer on IA (inside RAR) | https://archive.org/download/lg-dll-files/%24RCT1LM6.rar |
 | KF300 DLL on IA | https://archive.org/download/lg-dll-files/KF300_080313.dll |
@@ -71,4 +71,5 @@ This repo ships **text documentation only**, for archival and repair of a long-o
 
 ## Changelog
 
-- 2026-09-27 — docs published after successful Pass flash; IA pack link to be filled after upload.
+- 2026-09-27 — docs published after successful Pass flash.
+- 2026-09-27 — IA pack: https://archive.org/details/kf-300-flash-windows

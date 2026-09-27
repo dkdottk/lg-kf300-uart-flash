@@ -137,6 +137,7 @@ Mac: `probe.py -b 921600` → `boot: 1B` при правильной ориен�
 Источники: unlockers.ru archive t-19971; http://shouji.pc004.com/xuangou/2009/09/08/2185552.shtml  
 
 GitHub (docs only): https://github.com/dkdottk/lg-kf300-uart-flash
+Internet Archive (pack): https://archive.org/details/kf-300-flash-windows
 
 ---
 
